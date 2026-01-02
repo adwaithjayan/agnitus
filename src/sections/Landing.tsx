@@ -1,108 +1,212 @@
+import { useRef } from 'react'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
+
 export default function Landing() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const mobileJettRef = useRef<HTMLDivElement>(null)
+  const desktopJettRef = useRef<HTMLDivElement>(null)
+  const bgLogoRef = useRef<HTMLDivElement>(null)
+  const textBehindRef = useRef<HTMLHeadingElement>(null)
+  const textFrontRef = useRef<HTMLHeadingElement>(null)
+  const mobileTextRef = useRef<HTMLDivElement>(null)
+
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom center',
+          scrub: 1,
+        },
+      })
+
+      // Mobile Animations
+      if (mobileJettRef.current) {
+        tl.to(
+          mobileJettRef.current,
+          {
+            opacity: 0,
+            scale: 1.2,
+            filter: 'blur(10px)',
+            y: 50,
+            ease: 'power2.inOut',
+          },
+          0
+        )
+      }
+
+      if (mobileTextRef.current) {
+        tl.to(
+          mobileTextRef.current,
+          {
+            y: -100,
+            opacity: 0,
+            ease: 'power2.inOut',
+          },
+          0
+        )
+      }
+
+      // Desktop Animations
+      if (desktopJettRef.current) {
+        tl.to(
+          desktopJettRef.current,
+          {
+            opacity: 0,
+            scale: 1.2,
+            filter: 'blur(10px)',
+            y: 100,
+            ease: 'power2.inOut',
+          },
+          0
+        )
+      }
+
+      if (bgLogoRef.current) {
+        tl.to(
+          bgLogoRef.current,
+          {
+            y: 150,
+            opacity: 0.2,
+            scale: 0.8,
+            ease: 'power2.inOut',
+          },
+          0
+        )
+      }
+
+      if (textBehindRef.current) {
+        tl.to(
+          textBehindRef.current,
+          {
+            y: -50,
+            scale: 1.15,
+            transformOrigin: 'center bottom',
+            ease: 'power2.inOut',
+          },
+          0
+        )
+      }
+
+      if (textFrontRef.current) {
+        tl.to(
+          textFrontRef.current,
+          {
+            y: -50,
+            scale: 1.15,
+            opacity: 0,
+            transformOrigin: 'center bottom',
+            ease: 'power2.inOut',
+          },
+          0
+        )
+      }
+    },
+    { scope: containerRef }
+  )
+
   return (
-    <div className="relative h-screen w-full overflow-x-hidden bg-[#111111]">
-      <div className="flex h-dvh w-full items-center justify-center">
-        <img
-          src="/main_logo.svg"
-          alt="Main Logo"
-          className="h-full w-full object-contain"
-        />
-      </div>
-
-      {/* Layer 1: White Text Fill (Behind Jett) */}
-      <div className="pointer-events-none absolute inset-0 z-0 flex items-end justify-center pb-3">
-        <h1
-          className="text-[13vw] leading-none font-normal text-[#F5F5F5]"
-          style={{ fontFamily: 'ValorantFont' }}
+    <div
+      ref={containerRef}
+      className="relative h-dvh w-full overflow-hidden bg-[#111111]"
+    >
+      {/* Mobile View */}
+      <div className="relative block h-full w-full overflow-hidden md:hidden">
+        {/* Main Image (Jett) */}
+        <div
+          ref={mobileJettRef}
+          className="absolute top-16 right-0 bottom-0 left-0 z-0"
         >
-          AGNITUS
-        </h1>
-      </div>
+          <img
+            src="/jet_optimized.png"
+            alt="Jett"
+            className="h-full w-full object-cover object-[90%_0]"
+          />
+        </div>
 
-      {/* Layer 2: Jett Character */}
-      <div className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-[85vh] w-auto -translate-x-1/2">
-        <img src="/JET.svg" alt="Jett" className="h-full w-full object-cover" />
-      </div>
-
-      {/* Layer 3: Text Stroke (In Front of Jett) */}
-      <div className="pointer-events-none absolute inset-0 z-20 flex items-end justify-center pb-3">
-        <h1
-          className="text-[13vw] leading-none font-normal text-transparent"
-          style={{
-            fontFamily: 'ValorantFont',
-            WebkitTextStrokeWidth: '1.84px',
-            WebkitTextStrokeColor: '#F5F5F5',
-          }}
+        {/* Text Content */}
+        <div
+          ref={mobileTextRef}
+          className="pointer-events-none absolute top-32 right-0 left-0 z-10 flex flex-col items-center justify-center text-center"
         >
-          AGNITUS
-        </h1>
+          <h1
+            className="text-7xl leading-none font-normal text-white"
+            style={{ fontFamily: 'ValorantFont' }}
+          >
+            AGNITUS
+          </h1>
+          <p
+            className="mt-2 text-4xl font-normal text-white"
+            style={{ fontFamily: 'ValorantFont' }}
+          >
+            2026
+          </p>
+        </div>
+
+        {/* Phoenix Character */}
+        <div className="absolute bottom-0 left-1/2 z-0 h-[65%] w-full -translate-x-1/2 overflow-hidden">
+          <img
+            src="/Phoenix.svg"
+            alt="Phoenix"
+            className="h-full w-full object-cover object-[60%_100%]"
+          />
+        </div>
       </div>
 
-      {/* Grid Layout Overlay */}
-      <div className="pointer-events-none absolute inset-0 z-10 px-8 py-6 sm:px-12 sm:py-8 md:px-16 md:py-10">
-        <div className="relative flex h-full w-full flex-col rounded-[10px] border border-white">
-          {/* Top Header Row */}
-          <div className="flex h-20 w-full border-b border-white">
-            {/* Menu Button (Top Left Cell) */}
-            <div className="pointer-events-auto flex aspect-square h-full w-20 items-center justify-center border-r border-white">
-              <div className="flex flex-col items-start gap-2">
-                <div className="h-1 w-6 rounded-full bg-white" />
-                <div className="h-1 w-10 rounded-full bg-white" />
-              </div>
-            </div>
+      {/* Desktop View */}
+      <div className="relative hidden h-full w-full md:block">
+        <div
+          ref={bgLogoRef}
+          className="flex h-dvh w-full items-center justify-center"
+        >
+          <img
+            src="/main_logo.svg"
+            alt="Main Logo"
+            className="h-full w-full object-contain"
+          />
+        </div>
 
-            {/* Stats Header (Top Right Cell) */}
-            <div className="flex flex-1 items-center justify-end px-6 sm:px-10">
-              <div className="flex items-center gap-4 text-xs leading-none font-medium tracking-wide text-white sm:gap-8 sm:text-sm">
-                {/* Events */}
-                <div className="flex items-center gap-2">
-                  <img src="/i1.svg" alt="Events" className="h-4 w-auto" />
-                  <span>0/10 Events</span>
-                </div>
+        {/* Layer 1: White Text Fill (Behind Jett) */}
+        <div className="pointer-events-none absolute inset-0 z-0 flex items-end justify-center pb-3">
+          <h1
+            ref={textBehindRef}
+            className="text-[14vw] leading-none font-normal text-[#F5F5F5]"
+            style={{ fontFamily: 'ValorantFont' }}
+          >
+            AGNITUS
+          </h1>
+        </div>
 
-                {/* Days */}
-                <div className="flex items-center gap-2">
-                  <img src="/i3.svg" alt="Days" className="h-4 w-auto" />
-                  <span>24 Days</span>
-                </div>
+        {/* Layer 2: Jett Character */}
+        <div
+          ref={desktopJettRef}
+          className="pointer-events-none absolute bottom-0 left-1/2 z-10 h-full w-full -translate-x-1/2 md:top-auto md:-bottom-64 md:h-[160vh] md:w-[85vw]"
+        >
+          <img
+            src="/jet_optimized.png"
+            alt="Jett"
+            className="h-full w-full object-cover object-top md:object-center"
+          />
+        </div>
 
-                {/* Partners */}
-                <div className="flex items-center gap-2">
-                  <img src="/i4.svg" alt="Partners" className="h-4 w-auto" />
-                  <span>50 Partners</span>
-                </div>
-
-                {/* Participants */}
-                <div className="flex items-center gap-2">
-                  <img
-                    src="/i5.svg"
-                    alt="Participants"
-                    className="h-4 w-auto"
-                  />
-                  <span>2000+ participants</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Body Row */}
-          <div className="flex w-full flex-1">
-            {/* Left Sidebar Column */}
-            <div className="w-20 border-r border-white">
-              {/* Sidebar content can go here if needed */}
-            </div>
-            {/* Main Content Area */}
-            <div className="relative flex-1">{/* Content goes here */}</div>
-          </div>
-
-          {/* Bottom Logos (Absolute positioned on corners) */}
-          <div className="absolute -bottom-px -left-px flex h-14 w-12 -translate-x-1/2 translate-y-1/2 items-center justify-center bg-[#111111]">
-            <img src="/logo.svg" alt="Logo" className="w-8" />
-          </div>
-
-          <div className="absolute -right-px -bottom-px flex h-14 w-12 translate-x-1/2 translate-y-1/2 items-center justify-center bg-[#111111]">
-            <img src="/logo.svg" alt="Logo" className="w-8" />
-          </div>
+        {/* Layer 3: Text Stroke (In Front of Jett) */}
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-end justify-center pb-3">
+          <h1
+            ref={textFrontRef}
+            className="text-[14vw] leading-none font-normal text-transparent"
+            style={{
+              fontFamily: 'ValorantFont',
+              WebkitTextStrokeWidth: '1.84px',
+              WebkitTextStrokeColor: '#F5F5F5',
+            }}
+          >
+            AGNITUS
+          </h1>
         </div>
       </div>
     </div>

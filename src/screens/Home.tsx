@@ -1,5 +1,10 @@
 import Landing from '../sections/Landing'
 
 export default function Home() {
-  return <Landing />
+  return (
+    <div>
+      <Landing />
+      <section className="min-h-screen"></section>
+    </div>
+  )
 }
