@@ -34,31 +34,37 @@ export default function AboutText() {
   return (
     <section
       ref={container}
-      className="relative flex w-full flex-col justify-center bg-transparent px-6 py-10 md:px-20"
+      className="relative flex w-full flex-col items-center justify-center bg-transparent px-6 py-2 pt-10 md:mt-20 md:px-0 md:py-10 md:pl-44"
     >
-      <div className="mx-auto w-full max-w-7xl">
-        {/* Label */}
-        <div ref={labelRef} className="mb-4 flex items-center gap-3 md:ml-32">
-          <div className="h-1.5 w-1.5 bg-[#00ffff]" />
+      <div className="flex w-fit flex-col items-start gap-4">
+        {/* Label (Left alignment) */}
+        <div
+          ref={labelRef}
+          className="flex shrink-0 items-center gap-3 md:w-auto"
+        >
+          <div className="bg-primary h-1.5 w-1.5 animate-pulse shadow-[0_0_8px_var(--color-primary)]" />
           <span
-            className="text-sm tracking-[0.2em] text-white uppercase"
-            style={{ fontFamily: 'Unison Pro', fontWeight: 400 }}
+            className="text-label-sm sm:text-label-base leading-normal font-normal tracking-[0.0525rem] text-white uppercase opacity-80"
+            style={{ fontFamily: 'var(--font-montserrat)' }}
           >
             About Agnitus
           </span>
         </div>
 
-        {/* Main Text Content */}
-        <div className="w-full">
+        {/* Main Text Content (Right alignment) */}
+        <div className="flex-1">
           <p
             ref={textRef}
-            className="text-justify indent-20 text-xl leading-relaxed text-white md:ml-32 md:indent-48 md:text-[24px] md:leading-[1.4]"
-            style={{ fontFamily: 'Unison Pro', fontWeight: 700 }}
+            className="xl:text-heading-lg text-left text-sm font-bold text-white uppercase sm:text-base md:max-w-xl md:text-xl lg:max-w-3xl lg:text-2xl xl:max-w-4xl xl:leading-[1.04705] xl:tracking-[0.07rem]"
+            style={{
+              fontFamily: 'var(--font-unison)',
+              fontWeight: 700,
+            }}
           >
             LOREM IPSUM ET UT VOLUTPAT ERAT FAUCIBUS MAURIS VIVERRA AUCTOR RISUS
             IACULIS ULTRICES QUAM GRAVIDA AUCTOR RISUS IACULIS ULTRICES QUAM
             GRAVIDA AUCTOR RISUS IACULIS ULTRICES QUAM GRAVIDA AUCTOR RISUS
-            IACULIS ULTRICES QUAM GRAVIDA .
+            IACULIS ULTRICES QUAM GRAVIDA.
           </p>
         </div>
       </div>

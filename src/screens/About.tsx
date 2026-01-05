@@ -28,11 +28,22 @@ export default function About() {
             isDesktop: boolean
           }
 
+          // Entrance Animation for Images
+          const entranceTl = gsap.timeline({ delay: 1 }) // Start after text animation roughly
+
+          entranceTl.from([leftImage.current, rightImage.current], {
+            y: 100,
+            opacity: 0,
+            duration: 1.2,
+            stagger: 0.3,
+            ease: 'power3.out',
+          })
+
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: container.current,
               start: 'top top',
-              end: '+=150%',
+              end: '+=100%',
               scrub: 1,
               pin: true,
             },
@@ -150,9 +161,9 @@ export default function About() {
   return (
     <div
       ref={container}
-      className="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#111111]"
+      className="relative flex min-h-screen w-full flex-col overflow-hidden"
     >
-      <div ref={textRef} className="z-10 pt-28">
+      <div ref={textRef} className="z-10 pt-20">
         <AboutText />
       </div>
 
@@ -162,7 +173,7 @@ export default function About() {
         ref={leftImage}
         src="/bike.png"
         alt="Bike"
-        className="absolute -bottom-32 left-[28%] h-[300px] w-[250px] rounded-t-2xl object-cover md:h-[400px] md:w-[350px]"
+        className="absolute -bottom-20 left-[5%] z-50 h-[200px] w-[180px] rounded-t-2xl object-cover sm:left-[10%] sm:h-[250px] sm:w-[200px] md:-bottom-32 md:left-[15%] md:h-[300px] md:w-[250px] lg:-bottom-40 lg:left-[20%] lg:h-[350px] lg:w-[300px] xl:-bottom-48 xl:left-[28%] xl:h-[400px] xl:w-[350px]"
       />
 
       {/* Right Image (Sitara) */}
@@ -170,7 +181,7 @@ export default function About() {
         ref={rightImage}
         src="/sitara.png"
         alt="Sitara"
-        className="absolute right-[28%] -bottom-56 h-[300px] w-[250px] rounded-t-2xl object-cover md:h-[400px] md:w-[350px]"
+        className="absolute right-[5%] -bottom-32 z-50 h-[200px] w-[180px] rounded-t-2xl object-cover sm:right-[10%] sm:h-[250px] sm:w-[200px] md:right-[15%] md:-bottom-48 md:h-[300px] md:w-[250px] lg:right-[20%] lg:-bottom-64 lg:h-[350px] lg:w-[300px] xl:right-[28%] xl:-bottom-72 xl:h-[400px] xl:w-[350px]"
       />
 
       {/* Overlay Mask */}

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import gsap from 'gsap'
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -12,51 +13,65 @@ const KprLink = ({
   isOpen: boolean
   onClick: () => void
 }) => {
-  const [displayText, setDisplayText] = useState(item.label)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const textRef = useRef<HTMLSpanElement>(null)
+  const animationRef = useRef<gsap.core.Tween | null>(null)
 
   const animateText = useCallback(() => {
-    let iteration = 0
-    if (intervalRef.current) clearInterval(intervalRef.current)
+    if (!textRef.current) return
 
-    intervalRef.current = setInterval(() => {
-      setDisplayText(() =>
-        item.label
+    // Kill existing animation
+    if (animationRef.current) animationRef.current.kill()
+
+    const chars = LETTERS
+    const originalText = item.label
+    const length = originalText.length
+    const proxy = { value: 0 }
+
+    animationRef.current = gsap.to(proxy, {
+      value: length,
+      duration: 0.8,
+      ease: 'none',
+      onUpdate: () => {
+        if (!textRef.current) return
+        const progress = Math.floor(proxy.value)
+
+        const scrambled = originalText
           .split('')
           .map((_, index) => {
-            if (index < iteration) {
-              return item.label[index]
+            if (index < progress) {
+              return originalText[index] // Revealed char
             }
-            return LETTERS[Math.floor(Math.random() * 26)]
+            return chars[Math.floor(Math.random() * chars.length)] // Random char
           })
           .join('')
-      )
 
-      if (iteration >= item.label.length) {
-        if (intervalRef.current) clearInterval(intervalRef.current)
-      }
+        textRef.current.innerText = scrambled
+      },
+      onComplete: () => {
+        if (textRef.current) textRef.current.innerText = originalText
+      },
+    })
+  }, [item.label])
 
-      iteration += 1 / 3
-    }, 60)
+  const resetText = useCallback(() => {
+    if (animationRef.current) animationRef.current.kill()
+    if (textRef.current) textRef.current.innerText = item.label
   }, [item.label])
 
   useEffect(() => {
     if (isOpen) {
       animateText()
+    } else {
+      resetText()
     }
-  }, [isOpen, animateText])
-
-  const handleMouseLeave = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    setDisplayText(item.label)
-  }
+  }, [isOpen, animateText, resetText])
 
   return (
     <Link
       to={item.href}
       onClick={onClick}
       onMouseEnter={animateText}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={resetText}
       className="group relative flex w-auto max-w-full items-center gap-4 px-4 py-1 pr-10 pl-0 transition-all duration-300 md:w-96 md:max-w-md md:pr-14"
       style={{
         clipPath:
@@ -64,8 +79,11 @@ const KprLink = ({
       }}
     >
       <div className="absolute inset-0 z-0 hidden h-full w-full -translate-x-full bg-[#00FCCE] opacity-0 transition-transform duration-300 ease-out group-hover:translate-x-0 group-hover:opacity-100 md:block" />
-      <span className="relative z-10 pl-2 font-['Unison_Pro'] text-2xl leading-normal font-bold tracking-[0.04rem] text-white transition-transform duration-300 md:text-4xl">
-        {displayText}
+      <span
+        ref={textRef}
+        className="relative z-10 pl-2 font-['Unison_Pro'] text-2xl leading-normal font-bold tracking-[0.04rem] text-white transition-transform duration-300 md:text-4xl"
+      >
+        {item.label}
       </span>
     </Link>
   )
@@ -91,11 +109,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const menuItems = [
     { label: 'HOME', href: '/' },
-    { label: 'EVENTS', href: '#' },
-    { label: 'WORKSHOPS', href: '#' },
+    { label: 'EVENTS', href: '/events' },
+    { label: 'WORKSHOPS', href: '/workshops' },
     { label: 'ABOUT', href: '/about' },
-    { label: 'CONTACT', href: '#' },
-    { label: 'MAP', href: '#' },
+    { label: 'CONTACT', href: '/contacts' },
+    { label: 'MAP', href: '/map' },
   ]
 
   return (
@@ -110,8 +128,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
       {/* Sidebar Panel */}
       <div
-        className={`pointer-events-auto fixed top-0 left-0 z-70 h-full w-full transform overflow-hidden bg-[#111111] text-white opacity-0 shadow-2xl transition-all duration-700 ease-in-out md:fixed md:w-[70%] md:rounded-xl ${
-          isOpen ? 'translate-x-0 opacity-100' : '-translate-x-full'
+        className={`pointer-events-auto fixed top-0 left-0 z-70 h-full w-full transform overflow-hidden bg-[#111111] text-white opacity-0 shadow-2xl transition-all duration-700 ease-in-out md:fixed md:top-10 md:right-16 md:bottom-10 md:left-36 md:h-auto md:w-auto md:translate-x-0 md:rounded-xl ${
+          isOpen
+            ? 'translate-x-0 opacity-100 md:[clip-path:inset(0_0_0_0)]'
+            : '-translate-x-full md:[clip-path:inset(0_100%_0_0)]'
         }`}
         style={{ fontFamily: 'ValorantFont' }}
       >
